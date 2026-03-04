@@ -9,37 +9,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm ci
 
 # Install Playwright browsers (required before first run)
-npx playwright install --with-deps
+npx playwright install chromium
 
-# Run Cucumber/BDD tests
+# Run all tests
 npm test
 
-# Run all Playwright tests
-npx playwright test
-
-# Run a single Playwright test file
-npx playwright test tests/example.spec.ts
-
-# Run Playwright tests in a specific browser
-npx playwright test --project=chromium
-
-# Run a single Cucumber feature file
-npx cucumber-js features/is_it_friday_yet.feature
+# Run a single feature file
+npx cucumber-js features/my_feature.feature
 ```
 
 ## Architecture
 
-This project has **two parallel test frameworks** that coexist independently:
+Playwright + Cucumber BDD in TypeScript, targeting [automationexercise.com](https://automationexercise.com).
 
-### Playwright (`tests/`)
-- TypeScript spec files (`*.spec.ts`) using `@playwright/test`
-- Configured via `playwright.config.ts` — runs against Chromium, Firefox, and WebKit
-- This is what CI (`.github/workflows/playwright.yml`) runs on push/PR
+- `features/` — Gherkin `.feature` files only
+- `pages/` — Page Object Models (extend `BasePage`)
+- `step_definitions/` — Cucumber step implementations (use `this.page`)
+- `support/world.ts` — Cucumber World class: launches Chromium, sets `baseURL`, exposes `this.page` and `this.browser` to all steps via Before/After hooks
 
-### Cucumber BDD (`features/`)
-- Gherkin feature files (`*.feature`) describe scenarios in plain English
-- Step definitions in `features/step_definitions/` are written in CommonJS JavaScript
-- `cucumber.json` configures the runner with `snippetInterface: "synchronous"` — step definitions must use synchronous style (not async/await or callbacks)
-- Run via `npm test` (`cucumber-js`)
+**Page Object pattern:** each page class extends `BasePage`, defines locators in the constructor, and exposes action methods. Step definitions instantiate page objects with `this.page` from the World.
 
-Step definitions use the Cucumber `this` context to pass state between steps (Given/When/Then share `this.today`, `this.actualAnswer`, etc.).
+**Cucumber config (`cucumber.json`):** uses `ts-node/register` to run TypeScript directly. Step definitions are async (`async-await` snippet interface). `support/` is loaded before `step_definitions/` so the World is registered first.
