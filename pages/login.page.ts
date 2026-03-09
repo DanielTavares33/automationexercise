@@ -40,6 +40,15 @@ export class LoginPage extends BasePage {
     await expect(this.locators.accountDeletedHeading).toBeVisible();
   }
 
+  async fillInvalidLoginForm(): Promise<void> {
+    await this.locators.loginEmailInput.fill('invalid@example.com');
+    await this.locators.passwordInput.fill('wrongpassword');
+  }
+
+  async verifyInvalidCredentialsError(): Promise<void> {
+    await expect(this.locators.invalidCredentialsError).toBeVisible();
+  }
+
   async clickSignupButton(): Promise<void> {
     await this.locators.signupButton.click();
   }

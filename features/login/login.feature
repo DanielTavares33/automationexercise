@@ -4,6 +4,14 @@ Feature: Login
   Background:
     Given I visit the home page
 
+  @invalid @login
+  Scenario: Login User with incorrect email and password
+    When I click on the "Signup / Login" button
+    Then I should see the login form
+    When I enter incorrect email address and password
+    And I click on the "Login" button
+    Then I should see an error "Your email or password is incorrect!"
+
   @valid @delete-account
   Scenario: Login User with correct email and password
     And  I have a registered account

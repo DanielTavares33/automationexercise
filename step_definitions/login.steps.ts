@@ -1,30 +1,45 @@
-import { PlaywrightWorld } from '../support/world';
-import { Then, When } from '@cucumber/cucumber';
+import { createBdd } from 'playwright-bdd';
+import { test } from '../support/fixtures';
 
-Then("I should see the new user signup form", async function (this: PlaywrightWorld) {
-  await this.loginPage.verifySignupForm();
+const { Then, When } = createBdd(test);
+
+Then('I should see the new user signup form', async ({ loginPage }) => {
+  await loginPage.verifySignupForm();
 });
 
-Then("I enter a valid {string}", async function (this: PlaywrightWorld, input: string) {
-  await this.loginPage.signUpForm(input);
+Then('I enter a valid {string}', async ({ loginPage }, input: string) => {
+  await loginPage.signUpForm(input);
 });
 
-Then("I should see an error {string}", async function (this: PlaywrightWorld, _message: string) {
-  await this.loginPage.verifyEmailExistsError();
+Then('I should see an error {string}', async ({ loginPage }, message: string) => {
+  switch (message) {
+    case 'Email Address already exist!':
+      await loginPage.verifyEmailExistsError();
+      break;
+    case 'Your email or password is incorrect!':
+      await loginPage.verifyInvalidCredentialsError();
+      break;
+    default:
+      throw new Error(`Unknown error message: ${message}`);
+  }
 });
 
-Then("I should see the login form", async function (this: PlaywrightWorld) {
-  await this.loginPage.verifyLoginForm();
+When('I enter incorrect email address and password', async ({ loginPage }) => {
+  await loginPage.fillInvalidLoginForm();
 });
 
-When("I fill in the login form", async function (this: PlaywrightWorld) {
-  await this.loginPage.fillLoginForm();
+Then('I should see the login form', async ({ loginPage }) => {
+  await loginPage.verifyLoginForm();
 });
 
-Then("I should be logged in as the user", async function (this: PlaywrightWorld) {
-  await this.loginPage.verifyLoggedIn();
+When('I fill in the login form', async ({ loginPage }) => {
+  await loginPage.fillLoginForm();
 });
 
-Then("I should see the {string} message", async function (this: PlaywrightWorld, _message: string) {
-  await this.loginPage.verifyAccountDeleted();
+Then('I should be logged in as the user', async ({ loginPage }) => {
+  await loginPage.verifyLoggedIn();
+});
+
+Then('I should see the "ACCOUNT DELETED!" message', async ({ loginPage }) => {
+  await loginPage.verifyAccountDeleted();
 });

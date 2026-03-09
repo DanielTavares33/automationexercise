@@ -1,27 +1,29 @@
-import { Given, When } from '@cucumber/cucumber';
-import { PlaywrightWorld } from '../support/world';
+import { createBdd } from 'playwright-bdd';
+import { test } from '../support/fixtures';
 
-Given("I visit the home page", async function (this: PlaywrightWorld) {
-  await this.homePage.visitHomePage();
+const { Given, When } = createBdd(test);
+
+Given('I visit the home page', async ({ homePage }) => {
+  await homePage.visitHomePage();
 });
 
-When("I navigate to the login page", async function (this: PlaywrightWorld) {
-  await this.page.goto('/login');
+When('I navigate to the login page', async ({ page }) => {
+  await page.goto('/login');
 });
 
-When("I click on the {string} button", async function (this: PlaywrightWorld, buttonText: string) {
+When('I click on the {string} button', async ({ homePage, loginPage }, buttonText: string) => {
   switch (buttonText) {
-    case "Signup / Login":
-      await this.homePage.clickButton();
+    case 'Signup / Login':
+      await homePage.clickButton();
       break;
-    case "Signup":
-      await this.loginPage.clickSignupButton();
+    case 'Signup':
+      await loginPage.clickSignupButton();
       break;
-    case "Login":
-      await this.loginPage.clickLoginButton();
+    case 'Login':
+      await loginPage.clickLoginButton();
       break;
-    case "Delete Account":
-      await this.loginPage.clickDeleteAccount();
+    case 'Delete Account':
+      await loginPage.clickDeleteAccount();
       break;
     default:
       throw new Error(`Unknown button: ${buttonText}`);

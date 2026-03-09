@@ -8,5 +8,5 @@
     "outDir": "dist",
     "types": ["node"]
   },
-  "include": ["pages/**/*.ts", "step_definitions/**/*.ts", "support/**/*.ts"]
+  "include": ["pages/**/*.ts", "locators/**/*.ts", "step_definitions/**/*.ts", "support/**/*.ts", "playwright.config.ts"]
 }

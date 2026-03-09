@@ -1,41 +1,43 @@
-import { Given, Then, When } from "@cucumber/cucumber";
-import { PlaywrightWorld } from "../support/world";
+import { createBdd } from 'playwright-bdd';
+import { test } from '../support/fixtures';
 
-Given("I have a registered account", async function (this: PlaywrightWorld) {
-  await this.homePage.clickButton();
-  await this.loginPage.signUpForm("name");
-  await this.loginPage.signUpForm("email address");
-  await this.loginPage.clickSignupButton();
-  await this.registerPage.fillAccountInformationForm();
-  await this.registerPage.clickCreateAccountButton();
-  await this.page.goto('/');
+const { Given, Then, When } = createBdd(test);
+
+Given('I have a registered account', async ({ page, homePage, loginPage, registerPage }) => {
+  await homePage.clickButton();
+  await loginPage.signUpForm('name');
+  await loginPage.signUpForm('email address');
+  await loginPage.clickSignupButton();
+  await registerPage.fillAccountInformationForm();
+  await registerPage.clickCreateAccountButton();
+  await page.goto('/');
 });
 
-Then("I fill in the account information form", async function (this: PlaywrightWorld) {
-  await this.registerPage.fillAccountInformationForm();
+Then('I fill in the account information form', async ({ registerPage }) => {
+  await registerPage.fillAccountInformationForm();
 });
 
-Then("I should see the \"ENTER ACCOUNT INFORMATION\" form", async function (this: PlaywrightWorld) {
-  await this.registerPage.verifyAccountInformationForm();
+Then('I should see the "ENTER ACCOUNT INFORMATION" form', async ({ registerPage }) => {
+  await registerPage.verifyAccountInformationForm();
 });
 
-When("I click the {string} button", async function (this: PlaywrightWorld, buttonText: string) {
+When('I click the {string} button', async ({ registerPage }, buttonText: string) => {
   switch (buttonText) {
-    case "Create Account":
-      await this.registerPage.clickCreateAccountButton();
+    case 'Create Account':
+      await registerPage.clickCreateAccountButton();
       break;
-    case "Continue":
-      await this.registerPage.clickContinueButton();
+    case 'Continue':
+      await registerPage.clickContinueButton();
       break;
     default:
       throw new Error(`Unknown button: ${buttonText}`);
   }
 });
 
-Then("I should see the \"ACCOUNT CREATED!\" message", async function (this: PlaywrightWorld) {
-  await this.registerPage.verifyAccountCreated();
+Then('I should see the "ACCOUNT CREATED!" message', async ({ registerPage }) => {
+  await registerPage.verifyAccountCreated();
 });
 
-Then("I should be logged in as the new user", async function (this: PlaywrightWorld) {
-  await this.registerPage.verifyLoggedIn();
+Then('I should be logged in as the new user', async ({ registerPage }) => {
+  await registerPage.verifyLoggedIn();
 });

@@ -12,6 +12,7 @@ export class LoginLocators {
   readonly loggedInAsLink: Locator;
   readonly deleteAccountLink: Locator;
   readonly accountDeletedHeading: Locator;
+  readonly invalidCredentialsError: Locator;
 
   constructor(page: Page) {
     this.nameInput = page.locator('input[data-qa="signup-name"]');
@@ -25,5 +26,6 @@ export class LoginLocators {
     this.loggedInAsLink = page.locator('#header li a b');
     this.deleteAccountLink = page.locator('a[href="/delete_account"]');
     this.accountDeletedHeading = page.locator('[data-qa="account-deleted"]');
+    this.invalidCredentialsError = page.locator('form[action="/login"] p[style="color: red;"]');
   }
 }
