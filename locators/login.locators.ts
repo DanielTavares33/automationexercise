@@ -7,6 +7,7 @@ export class LoginLocators {
   readonly passwordInput: Locator;
   readonly loginEmailInput: Locator;
   readonly loginButton: Locator;
+  readonly emailExistsError: Locator;
 
   constructor(page: Page) {
     this.nameInput = page.locator('input[data-qa="signup-name"]');
@@ -15,5 +16,6 @@ export class LoginLocators {
     this.passwordInput = page.locator('input[data-qa="login-password"]');
     this.loginEmailInput = page.locator('input[data-qa="login-email"]');
     this.loginButton = page.locator('button[data-qa="login-button"]');
+    this.emailExistsError = page.locator('form[action="/signup"] p[style="color: red;"]');
   }
 }

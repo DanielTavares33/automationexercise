@@ -24,9 +24,16 @@ export class LoginPage extends BasePage {
       case "email address":
         await this.locators.signupEmailInput.fill(faker.internet.email());
         break;
+      case "existing email address":
+        await this.locators.signupEmailInput.fill("test@test.com");
+        break;
       default:
         throw new Error(`Unknown input type: ${input}`);
     }
+  }
+
+  async verifyEmailExistsError(): Promise<void> {
+    await expect(this.locators.emailExistsError).toBeVisible();
   }
 
   async verifySignupForm(): Promise<void> {

@@ -33,7 +33,7 @@ Playwright + Cucumber BDD in TypeScript, targeting [automationexercise.com](http
 
 ## Key Patterns
 
-**Locator pattern:** locators live in `locators/<page>.locators.ts` as a class with `readonly Locator` fields. Page objects instantiate the locator class: `this.locators = new HomeLocators(page)`.
+**Locator pattern:** locators live in `locators/<page>.locators.ts` as a class with `readonly Locator` fields. Page objects instantiate the locator class: `this.locators = new HomeLocators(page)`. Always use CSS selectors (e.g. `[data-qa="..."]`, `p[style="color: red;"]`). Never use Playwright option objects like `{ hasText: '...' }` or role-based selectors.
 
 **World as page object registry:** `PlaywrightWorld` holds `this.page` and page object instances (e.g. `this.homePage`). Page objects are created in the `Before` hook after the browser opens. Step definitions access them via `this.homePage`, typed with `this: PlaywrightWorld`.
 

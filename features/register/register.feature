@@ -4,6 +4,15 @@ Feature: Register
   Background:
     Given I visit the home page
 
+  @invalid @register
+  Scenario: Register user with existing email
+    And I click on the "Signup / Login" button
+    And I should see the new user signup form
+    And I enter a valid "name"
+    And I enter a valid "existing email address"
+    When I click on the "Signup" button
+    Then I should see an error "Email Address already exist!"
+
   @valid @register
   Scenario: Register user
     And I click on the "Signup / Login" button
