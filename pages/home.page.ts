@@ -1,19 +1,28 @@
-import { Page, Locator } from 'playwright';
+import { Page } from 'playwright';
 import { BasePage } from './base.page';
+import { HomeLocators } from '../locators/home.locators';
 
 export class HomePage extends BasePage {
-  private signupLoginButton: Locator;
+  readonly locators: HomeLocators;
 
   constructor(page: Page) {
     super(page);
-    this.signupLoginButton = page.getByRole('link', { name: 'Signup / Login' });
+    this.locators = new HomeLocators(page);
   }
 
-  async goto(): Promise<void> {
-    await super.goto('/');
+  async clickButton(): Promise<void> {
+    await this.locators.signupLoginButton.click();
   }
 
-  async clickSignupLogin(): Promise<void> {
-    await this.signupLoginButton.click();
+  async visitHomePage(): Promise<void> {
+    await this.page.goto('https://automationexercise.com/');
+    await this.googleConsentPopup();
+  }
+
+  private async googleConsentPopup() {
+    const consentButton = this.page.getByRole('button', { name: 'Consent' });
+    if (await consentButton.isVisible()) {
+      await consentButton.click();
+    }
   }
 }

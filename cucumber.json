@@ -1,6 +1,5 @@
 {
   "default": {
-    "loader": ["ts-node/esm"],
     "requireModule": ["ts-node/register"],
     "paths": ["features/**/*.feature"],
     "require": ["support/**/*.ts", "step_definitions/**/*.ts"],

@@ -14,19 +14,35 @@ npx playwright install chromium
 # Run all tests
 npm test
 
+# Run tests by tag
+npm test -- --tags "@tagname"
+
 # Run a single feature file
-npx cucumber-js features/my_feature.feature
+npm test -- features/register/register.feature
 ```
 
 ## Architecture
 
 Playwright + Cucumber BDD in TypeScript, targeting [automationexercise.com](https://automationexercise.com).
 
-- `features/` — Gherkin `.feature` files only
-- `pages/` — Page Object Models (extend `BasePage`)
-- `step_definitions/` — Cucumber step implementations (use `this.page`)
-- `support/world.ts` — Cucumber World class: launches Chromium, sets `baseURL`, exposes `this.page` and `this.browser` to all steps via Before/After hooks
+- `features/` — Gherkin `.feature` files, organized by domain (e.g. `features/register/`, `features/login/`)
+- `locators/` — Locator classes per page (e.g. `HomeLocators`). Each class holds `readonly Locator` properties initialized in the constructor.
+- `pages/` — Page Object Models (extend `BasePage`). Each page instantiates its locator class and exposes action methods.
+- `step_definitions/` — Cucumber step implementations. Use `this.homePage` (and future page instances) from the World.
+- `support/world.ts` — `PlaywrightWorld` class: launches Chromium (headless: false), sets `baseURL`, and instantiates page objects in the `Before` hook.
 
-**Page Object pattern:** each page class extends `BasePage`, defines locators in the constructor, and exposes action methods. Step definitions instantiate page objects with `this.page` from the World.
+## Key Patterns
 
-**Cucumber config (`cucumber.json`):** uses `ts-node/register` to run TypeScript directly. Step definitions are async (`async-await` snippet interface). `support/` is loaded before `step_definitions/` so the World is registered first.
+**Locator pattern:** locators live in `locators/<page>.locators.ts` as a class with `readonly Locator` fields. Page objects instantiate the locator class: `this.locators = new HomeLocators(page)`. Always use CSS selectors (e.g. `[data-qa="..."]`, `p[style="color: red;"]`). Never use Playwright option objects like `{ hasText: '...' }` or role-based selectors.
+
+**World as page object registry:** `PlaywrightWorld` holds `this.page` and page object instances (e.g. `this.homePage`). Page objects are created in the `Before` hook after the browser opens. Step definitions access them via `this.homePage`, typed with `this: PlaywrightWorld`.
+
+**GDPR consent popup:** `visitHomePage()` automatically dismisses the cookie consent popup after navigation. Any new page that navigates to the site should handle this.
+
+**Cucumber config (`cucumber.json`):** uses `requireModule: ts-node/register`. Step definitions are async (`async-await` snippet interface). `support/` loads before `step_definitions/` so the World is registered first.
+
+**Tags:** features use tags for filtering (e.g. `@register`, `@prio-1`, `@valid`). Run subsets with `npm test -- --tags "@tagname"`.
+
+## Workflow Rules
+
+- **Do not run tests after edits.** Never run `npm test` or any test command automatically after making code changes. Only run tests when explicitly asked.

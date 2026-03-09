@@ -12,6 +12,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@cucumber/cucumber": "^12.7.0",
+    "@faker-js/faker": "^10.3.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.3",
     "playwright": "^1.58.2",
