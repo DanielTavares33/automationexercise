@@ -42,3 +42,7 @@ Playwright + Cucumber BDD in TypeScript, targeting [automationexercise.com](http
 **Cucumber config (`cucumber.json`):** uses `requireModule: ts-node/register`. Step definitions are async (`async-await` snippet interface). `support/` loads before `step_definitions/` so the World is registered first.
 
 **Tags:** features use tags for filtering (e.g. `@register`, `@prio-1`, `@valid`). Run subsets with `npm test -- --tags "@tagname"`.
+
+## Workflow Rules
+
+- **Do not run tests after edits.** Never run `npm test` or any test command automatically after making code changes. Only run tests when explicitly asked.

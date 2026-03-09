@@ -16,7 +16,10 @@ export class HomePage extends BasePage {
 
   async visitHomePage(): Promise<void> {
     await this.page.goto('https://automationexercise.com/');
+    await this.googleConsentPopup();
+  }
 
+  private async googleConsentPopup() {
     const consentButton = this.page.getByRole('button', { name: 'Consent' });
     if (await consentButton.isVisible()) {
       await consentButton.click();

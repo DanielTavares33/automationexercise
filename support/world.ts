@@ -1,11 +1,28 @@
 import { setWorldConstructor, Before, After, IWorldOptions, World } from '@cucumber/cucumber';
 import { Browser, BrowserContext, Page, chromium } from 'playwright';
 import { HomePage } from '../pages/home.page';
+import { RegisterPage } from '../pages/register.page';
+import { LoginPage } from '../pages/login.page';
 
 export class PlaywrightWorld extends World {
   browser!: Browser;
   page!: Page;
-  homePage!: HomePage;
+
+  private _homePage?: HomePage;
+  private _registerPage?: RegisterPage;
+  private _loginPage?: LoginPage;
+
+  get homePage(): HomePage {
+    return this._homePage ??= new HomePage(this.page);
+  }
+
+  get registerPage(): RegisterPage {
+    return this._registerPage ??= new RegisterPage(this.page);
+  }
+
+  get loginPage(): LoginPage {
+    return this._loginPage ??= new LoginPage(this.page);
+  }
 
   constructor(options: IWorldOptions) {
     super(options);
@@ -26,7 +43,6 @@ setWorldConstructor(PlaywrightWorld);
 
 Before(async function (this: PlaywrightWorld) {
   await this.openBrowser();
-  this.homePage = new HomePage(this.page);
 });
 
 After(async function (this: PlaywrightWorld) {
