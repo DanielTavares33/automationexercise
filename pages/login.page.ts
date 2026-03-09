@@ -5,11 +5,39 @@ import { expect } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
 export class LoginPage extends BasePage {
+  private static readonly TEST_PASSWORD = 'Test1234!';
+  private _registeredEmail?: string;
+
   readonly locators: LoginLocators;
 
   constructor(page: Page) {
     super(page);
     this.locators = new LoginLocators(page);
+  }
+
+  async verifyLoginForm(): Promise<void> {
+    await expect(this.locators.loginFormHeading).toBeVisible();
+  }
+
+  async fillLoginForm(): Promise<void> {
+    await this.locators.loginEmailInput.fill(this._registeredEmail!);
+    await this.locators.passwordInput.fill(LoginPage.TEST_PASSWORD);
+  }
+
+  async clickLoginButton(): Promise<void> {
+    await this.locators.loginButton.click();
+  }
+
+  async verifyLoggedIn(): Promise<void> {
+    await expect(this.locators.loggedInAsLink).toBeVisible();
+  }
+
+  async clickDeleteAccount(): Promise<void> {
+    await this.locators.deleteAccountLink.click();
+  }
+
+  async verifyAccountDeleted(): Promise<void> {
+    await expect(this.locators.accountDeletedHeading).toBeVisible();
   }
 
   async clickSignupButton(): Promise<void> {
@@ -22,7 +50,8 @@ export class LoginPage extends BasePage {
         await this.locators.nameInput.fill(faker.person.fullName());
         break;
       case "email address":
-        await this.locators.signupEmailInput.fill(faker.internet.email());
+        this._registeredEmail = faker.internet.email();
+        await this.locators.signupEmailInput.fill(this._registeredEmail);
         break;
       case "existing email address":
         await this.locators.signupEmailInput.fill("test@test.com");

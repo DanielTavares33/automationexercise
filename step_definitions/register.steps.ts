@@ -1,5 +1,15 @@
-import { Then, When } from "@cucumber/cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
 import { PlaywrightWorld } from "../support/world";
+
+Given("I have a registered account", async function (this: PlaywrightWorld) {
+  await this.homePage.clickButton();
+  await this.loginPage.signUpForm("name");
+  await this.loginPage.signUpForm("email address");
+  await this.loginPage.clickSignupButton();
+  await this.registerPage.fillAccountInformationForm();
+  await this.registerPage.clickCreateAccountButton();
+  await this.page.goto('/');
+});
 
 Then("I fill in the account information form", async function (this: PlaywrightWorld) {
   await this.registerPage.fillAccountInformationForm();

@@ -5,6 +5,7 @@ import { RegisterLocators } from "../locators/register.locators";
 import { faker } from "@faker-js/faker";
 
 export class RegisterPage extends BasePage {
+  private static readonly TEST_PASSWORD = 'Test1234!';
   readonly locators: RegisterLocators;
 
   constructor(page: Page) {
@@ -62,7 +63,7 @@ export class RegisterPage extends BasePage {
   private async buildAccountData() {
     return {
       genderIndex:  faker.number.int({ min: 0, max: 1 }),
-      password:     faker.internet.password(),
+      password:     RegisterPage.TEST_PASSWORD,
       day:          String(faker.number.int({ min: 1, max: 28 })),
       month:        await this.randomOption(this.locators.monthOfBirthSelect),
       year:         await this.randomOption(this.locators.yearOfBirthSelect),
