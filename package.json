@@ -8,7 +8,8 @@
     "test:smoke": "bddgen && playwright test --grep @smoke",
     "test:regression": "bddgen && playwright test --grep @regression",
     "test:login": "bddgen && playwright test --grep @login",
-    "test:register": "bddgen && playwright test --grep @register"
+    "test:register": "bddgen && playwright test --grep @register",
+    "test:contact-us": "bddgen && playwright test --grep @contact-us"
   },
   "keywords": [],
   "author": "",

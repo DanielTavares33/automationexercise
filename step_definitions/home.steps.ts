@@ -11,7 +11,7 @@ When('I navigate to the login page', async ({ page }) => {
   await page.goto('/login');
 });
 
-When('I click on the {string} button', async ({ homePage, loginPage }, buttonText: string) => {
+When('I click on the {string} button', async ({ homePage, loginPage, contactUsPage }, buttonText: string) => {
   switch (buttonText) {
     case 'Signup / Login':
       await homePage.clickButton();
@@ -27,6 +27,15 @@ When('I click on the {string} button', async ({ homePage, loginPage }, buttonTex
       break;
     case 'Logout':
       await loginPage.clickLogout();
+      break;
+    case 'Contact Us':
+      await homePage.clickContactUs();
+      break;
+    case 'Submit':
+      await contactUsPage.submitForm();
+      break;
+    case 'Home':
+      await contactUsPage.clickHomeButton();
       break;
     default:
       throw new Error(`Unknown button: ${buttonText}`);
