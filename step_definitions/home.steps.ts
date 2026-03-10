@@ -25,6 +25,9 @@ When('I click on the {string} button', async ({ homePage, loginPage }, buttonTex
     case 'Delete Account':
       await loginPage.clickDeleteAccount();
       break;
+    case 'Logout':
+      await loginPage.clickLogout();
+      break;
     default:
       throw new Error(`Unknown button: ${buttonText}`);
   }

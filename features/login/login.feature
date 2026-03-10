@@ -22,3 +22,14 @@ Feature: Login
     Then I should be logged in as the user
     When I click on the "Delete Account" button
     Then I should see the "ACCOUNT DELETED!" message
+
+  @valid @logout @ass
+  Scenario: Logout User
+    And I have a registered account
+    When I click on the "Signup / Login" button
+    Then I should see the login form
+    When I fill in the login form
+    And I click on the "Login" button
+    Then I should be logged in as the user
+    When I click on the "Logout" button
+    Then I should see the login form

@@ -32,6 +32,10 @@ export class LoginPage extends BasePage {
     await expect(this.locators.loggedInAsLink).toBeVisible();
   }
 
+  async clickLogout(): Promise<void> {
+    await this.locators.logoutLink.click();
+  }
+
   async clickDeleteAccount(): Promise<void> {
     await this.locators.deleteAccountLink.click();
   }
