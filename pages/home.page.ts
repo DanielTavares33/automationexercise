@@ -22,6 +22,10 @@ export class HomePage extends BasePage {
     await this.locators.testCasesButton.click();
   }
 
+  async clickProducts(): Promise<void> {
+    await this.locators.productsButton.click();
+  }
+
   async visitHomePage(): Promise<void> {
     await this.page.goto('https://automationexercise.com/');
     await this.googleConsentPopup();

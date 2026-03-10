@@ -34,6 +34,9 @@ When('I click on the {string} button', async ({ homePage, loginPage, contactUsPa
     case 'Test Cases':
       await homePage.clickTestCases();
       break;
+    case 'Products':
+      await homePage.clickProducts();
+      break;
     case 'Submit':
       await contactUsPage.submitForm();
       break;

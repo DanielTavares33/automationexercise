@@ -10,7 +10,8 @@
     "test:login": "bddgen && playwright test --grep @login",
     "test:register": "bddgen && playwright test --grep @register",
     "test:contact-us": "bddgen && playwright test --grep @contact-us",
-    "test:test-cases": "bddgen && playwright test --grep @test-cases"
+    "test:test-cases": "bddgen && playwright test --grep @test-cases",
+    "test:products": "bddgen && playwright test --grep @products"
   },
   "keywords": [],
   "author": "",

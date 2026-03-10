@@ -3,12 +3,14 @@ import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { RegisterPage } from '../pages/register.page';
 import { ContactUsPage } from '../pages/contact_us.page';
+import { ProductsPage } from '../pages/products.page';
 
 export const test = base.extend<{
   homePage: HomePage;
   loginPage: LoginPage;
   registerPage: RegisterPage;
   contactUsPage: ContactUsPage;
+  productsPage: ProductsPage;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -21,5 +23,8 @@ export const test = base.extend<{
   },
   contactUsPage: async ({ page }, use) => {
     await use(new ContactUsPage(page));
+  },
+  productsPage: async ({ page }, use) => {
+    await use(new ProductsPage(page));
   },
 });
