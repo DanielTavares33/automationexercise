@@ -9,7 +9,8 @@
     "test:regression": "bddgen && playwright test --grep @regression",
     "test:login": "bddgen && playwright test --grep @login",
     "test:register": "bddgen && playwright test --grep @register",
-    "test:contact-us": "bddgen && playwright test --grep @contact-us"
+    "test:contact-us": "bddgen && playwright test --grep @contact-us",
+    "test:test-cases": "bddgen && playwright test --grep @test-cases"
   },
   "keywords": [],
   "author": "",
