@@ -1,10 +1,10 @@
-@prio-1 @register
+@regression @register
 Feature: Register
 
   Background:
     Given I visit the home page
 
-  @invalid @register
+  @regression @negative
   Scenario: Register user with existing email
     And I click on the "Signup / Login" button
     And I should see the new user signup form
@@ -13,7 +13,7 @@ Feature: Register
     When I click on the "Signup" button
     Then I should see an error "Email Address already exist!"
 
-  @valid @register
+  @smoke @positive
   Scenario: Register user
     And I click on the "Signup / Login" button
     And I should see the new user signup form

@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "bddgen && playwright test"
+    "test": "bddgen && playwright test",
+    "test:smoke": "bddgen && playwright test --grep @smoke",
+    "test:regression": "bddgen && playwright test --grep @regression",
+    "test:login": "bddgen && playwright test --grep @login",
+    "test:register": "bddgen && playwright test --grep @register"
   },
   "keywords": [],
   "author": "",
