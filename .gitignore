@@ -6,9 +6,13 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+.features-gen/
 
 # playwright-bdd generated tests
 /.features-gen/
 
 # MCP runtime logs
 .playwright-mcp/
+
+.opencode/
+.claude/
