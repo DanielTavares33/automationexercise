@@ -29,8 +29,13 @@ export class ContactUsPage extends BasePage {
   }
 
   async submitForm(): Promise<void> {
-    this.page.once('dialog', dialog => dialog.accept());
-    await this.locators.submitButton.click();
+    // Wait for the form's jQuery submit handler to be attached
+    await this.page.waitForLoadState('networkidle');
+    
+    await Promise.all([
+      this.page.waitForEvent('dialog').then(dialog => dialog.accept()),
+      this.locators.submitButton.click()
+    ]);
   }
 
   async verifySuccessMessage(message: string): Promise<void> {
