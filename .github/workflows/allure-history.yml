@@ -29,9 +29,6 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
       - name: Download Allure results artifact
         uses: dawidd6/action-download-artifact@v2
         continue-on-error: true
@@ -42,21 +39,34 @@ jobs:
           path: allure-results
           if_no_artifact_found: warn
       
-      - name: Get Allure history from gh-pages
+      - name: Get Allure history from gh-pages (sparse checkout)
         uses: actions/checkout@v4
         if: always()
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
+          sparse-checkout: |
+            allure-history
+            .nojekyll
+          sparse-checkout-cone-mode: false
       
       - name: Setup Allure history
         if: always()
         run: |
+          # Create allure-history directory
+          mkdir -p allure-history
+          
+          # Copy history from gh-pages if exists
           if [ -d "gh-pages/allure-history" ]; then
-            cp -r gh-pages/allure-history allure-history
+            cp -r gh-pages/allure-history/* allure-history/
+          fi
+          
+          # Ensure .nojekyll exists for GitHub Pages
+          if [ -f "gh-pages/.nojekyll" ]; then
+            cp gh-pages/.nojekyll .nojekyll
           else
-            mkdir -p allure-history
+            touch .nojekyll
           fi
       
       - name: Generate Allure report with history
