@@ -1,0 +1,85 @@
+name: Allure Report with History
+
+# This workflow generates Allure reports with historical trends
+# and publishes them to GitHub Pages
+# 
+# Prerequisites:
+# 1. Enable GitHub Pages in repository Settings
+# 2. Set source to 'gh-pages' branch
+# 3. Enable Read/Write permissions for workflows in Settings → Actions → General
+
+on:
+  workflow_run:
+    workflows: ["Scheduled Regression Tests"]
+    types:
+      - completed
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate-allure-report:
+    name: Generate Allure Report with History
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download Allure results artifact
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: allure-results-regression-${{ github.event.workflow_run.run_number }}
+          path: allure-results
+      
+      - name: Get Allure history from gh-pages
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+      
+      - name: Setup Allure history
+        if: always()
+        run: |
+          if [ -d "gh-pages/allure-history" ]; then
+            cp -r gh-pages/allure-history allure-history
+          else
+            mkdir -p allure-history
+          fi
+      
+      - name: Generate Allure report with history
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+      
+      - name: Deploy report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          keep_files: false
+      
+      - name: Add report URL to summary
+        if: always()
+        run: |
+          echo "## 📈 Allure Report Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The Allure report with historical trends has been published to GitHub Pages." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** It may take a few minutes for the report to be available after deployment." >> $GITHUB_STEP_SUMMARY

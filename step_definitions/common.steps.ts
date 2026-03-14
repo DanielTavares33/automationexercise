@@ -1,9 +1,14 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../support/fixtures';
+import { allure } from '../support/allure-helpers';
 
 const { When } = createBdd(test);
 
 When('I click on the {string} button', async ({ homePage, loginPage, contactUsPage, productsPage, checkoutPage, paymentPage }, buttonText: string) => {
+  allure.feature('User Interactions');
+  allure.story('Button Clicks');
+  allure.severity('normal');
+  
   switch (buttonText) {
     case 'Signup / Login':
       await homePage.clickButton();

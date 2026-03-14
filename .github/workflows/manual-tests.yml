@@ -93,13 +93,33 @@ jobs:
             ./scripts/run-tests.sh "${{ steps.test_tag.outputs.tag }}"
           fi
       
-      - name: Upload HTML report
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+      
+      - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ inputs.custom_tag || inputs.test_suite }}-${{ inputs.browser }}-${{ github.run_number }}
           path: playwright-report/
           retention-days: 30
+      
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ inputs.custom_tag || inputs.test_suite }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: allure-report/
+          retention-days: 30
+      
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ inputs.custom_tag || inputs.test_suite }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 7
       
       - name: Upload test results
         if: always()
@@ -119,4 +139,6 @@ jobs:
           echo "- **Workers:** ${{ inputs.workers }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [View HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Reports Available:**" >> $GITHUB_STEP_SUMMARY
+          echo "- [Playwright HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Allure Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

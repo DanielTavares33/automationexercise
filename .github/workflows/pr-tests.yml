@@ -42,13 +42,33 @@ jobs:
           WORKERS: 4
         run: ./scripts/run-tests.sh smoke
       
-      - name: Upload HTML report
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+      
+      - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-pr-${{ github.event.pull_request.number }}
           path: playwright-report/
           retention-days: 14
+      
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-pr-${{ github.event.pull_request.number }}
+          path: allure-report/
+          retention-days: 14
+      
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-pr-${{ github.event.pull_request.number }}
+          path: allure-results/
+          retention-days: 7
       
       - name: Upload test results
         if: always()
@@ -75,7 +95,9 @@ jobs:
             
             ${status === 'success' ? '✅ All smoke tests passed!' : '❌ Some tests failed. Please check the workflow details.'}
             
-            📊 [Download HTML Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            📊 **Reports Available:**
+            - [Playwright HTML Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            - [Allure Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
             `;
             
             github.rest.issues.createComment({

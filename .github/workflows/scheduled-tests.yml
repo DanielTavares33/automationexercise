@@ -39,13 +39,33 @@ jobs:
           WORKERS: 4
         run: ./scripts/run-tests.sh regression
       
-      - name: Upload HTML report
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+      
+      - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-regression-${{ github.run_number }}
           path: playwright-report/
           retention-days: 30
+      
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-regression-${{ github.run_number }}
+          path: allure-report/
+          retention-days: 30
+      
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-regression-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 14
       
       - name: Upload test results
         if: always()
@@ -72,7 +92,7 @@ jobs:
             
             **Action Required:**
             1. Review the [test results](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-            2. Download the HTML report artifact for detailed analysis
+            2. Download report artifacts (Playwright HTML or Allure) for detailed analysis
             3. Fix failing tests or update test expectations
             4. Close this issue once resolved
             
@@ -121,4 +141,6 @@ jobs:
             echo "❌ Some tests failed. An issue has been created automatically." >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [View HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Reports Available:**" >> $GITHUB_STEP_SUMMARY
+          echo "- [Playwright HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Allure Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

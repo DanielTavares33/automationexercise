@@ -72,6 +72,41 @@ HEADLESS=true npm test
 WORKERS=4 HEADLESS=true npm run test:smoke
 ```
 
+## Reporting
+
+### Playwright HTML Report
+Built-in visual report with screenshots, traces, and detailed test results.
+
+```bash
+# View report after test execution
+npx playwright show-report
+```
+
+### Allure Report
+Advanced reporting with trends, categories, historical data, and beautiful visualizations.
+
+```bash
+# Generate and open report
+npm run allure:serve
+
+# Or generate static report
+npm run allure:generate
+npm run allure:open
+
+# Run tests + auto-open Allure report
+npm run test:allure
+```
+
+**Allure Features:**
+- ✅ Test execution trends over time
+- ✅ Flaky test detection
+- ✅ Categorization by features and severity
+- ✅ BDD scenario step-by-step breakdown
+- ✅ Automatic screenshot/video attachments on failure
+- ✅ Historical trends (with GitHub Pages)
+
+**CI/CD:** Both Playwright HTML and Allure reports are generated automatically in GitHub Actions and available as workflow artifacts.
+
 ## GitHub Actions CI/CD
 
 This repository includes automated testing workflows:
@@ -93,6 +128,11 @@ This repository includes automated testing workflows:
    - Runs: Full @regression suite
    - Creates: GitHub issue on failure
 
+4. **Allure History** - Generate Allure reports with historical trends
+   - Trigger: After scheduled regression tests
+   - Publishes: Reports to GitHub Pages (optional)
+   - Maintains: Last 20 test runs history
+
 ### Usage
 
 **Run tests manually:**
@@ -102,9 +142,11 @@ This repository includes automated testing workflows:
 4. Choose test suite and parameters
 
 **View test results:**
-- Download HTML report from workflow artifacts
+- Download Playwright HTML report from workflow artifacts
+- Download Allure report from workflow artifacts
 - Check PR comments for smoke test results
 - Monitor scheduled test issues
+- (Optional) View historical Allure reports on GitHub Pages
 
 ## Tag Strategy
 

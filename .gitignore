@@ -11,6 +11,10 @@ node_modules/
 # playwright-bdd generated tests
 /.features-gen/
 
+# Allure Reports
+/allure-results/
+/allure-report/
+
 # MCP runtime logs
 .playwright-mcp/
 

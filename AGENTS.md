@@ -76,10 +76,56 @@ WORKERS=4 HEADLESS=true npm run test:smoke
 ```
 
 ### Reports
+
+**Playwright HTML Report:**
 ```bash
 # Open HTML report after test run
 npx playwright show-report
 ```
+
+**Allure Report:**
+```bash
+# Generate and open Allure report (after test execution)
+npm run allure:generate
+npm run allure:open
+
+# Or generate + serve in one command (quick view)
+npm run allure:serve
+
+# Run tests + auto-open Allure report
+npm run test:allure
+```
+
+**Allure Features:**
+- 📊 Test execution trends and analytics
+- 📈 Historical data (with GitHub Pages setup)
+- 🔍 Flaky test detection
+- 📋 BDD scenario step-by-step breakdown
+- 📷 Automatic screenshot/video attachments on failure
+- 🏷️ Categorization by features, severity, and tags
+
+**Using Allure Annotations in Step Definitions:**
+```typescript
+import { allure } from '../support/allure-helpers';
+
+Given('I am on the home page', async ({ homePage }) => {
+  allure.feature('Homepage');
+  allure.story('User Navigation');
+  allure.severity('critical');
+  
+  await homePage.visitHomePage();
+});
+```
+
+**Available Annotations:**
+- `allure.feature(name)` — Group by feature area
+- `allure.story(name)` — Group by user story
+- `allure.severity(level)` — Set priority (blocker/critical/normal/minor/trivial)
+- `allure.tag(tag)` — Add custom tags
+- `allure.description(text)` — Add test description
+- `allure.issue(id, url)` — Link to GitHub issue
+- `allure.owner(name)` — Set test owner
+- `allure.attach(name, content, type)` — Attach custom data
 
 ## GitHub Actions CI/CD
 

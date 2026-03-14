@@ -13,8 +13,24 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : 4,
   reporter: process.env.CI 
-    ? [['html'], ['github'], ['list']]
-    : 'html',
+    ? [
+        ['html'], 
+        ['github'], 
+        ['list'],
+        ['allure-playwright', {
+          outputFolder: 'allure-results',
+          detail: true,
+          suiteTitle: true,
+        }]
+      ]
+    : [
+        ['html'],
+        ['allure-playwright', {
+          outputFolder: 'allure-results',
+          detail: true,
+          suiteTitle: true,
+        }]
+      ],
   expect: {
     timeout: 10000,
   },
@@ -22,6 +38,8 @@ export default defineConfig({
     baseURL: 'https://automationexercise.com',
     headless: process.env.HEADLESS === 'true',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {

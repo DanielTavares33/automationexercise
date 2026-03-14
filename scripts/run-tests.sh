@@ -48,8 +48,10 @@ if [ $TEST_EXIT_CODE -eq 0 ]; then
 else
     echo -e "${RED}✗ Some tests failed (exit code: $TEST_EXIT_CODE)${NC}"
 fi
-echo -e "\n${YELLOW}HTML Report:${NC} playwright-report/index.html"
-echo -e "${YELLOW}View report:${NC} npx playwright show-report"
+echo -e "\n${YELLOW}Reports:${NC}"
+echo -e "  Playwright HTML: playwright-report/index.html"
+echo -e "  View Playwright: npx playwright show-report"
+echo -e "  Allure Report:   npx allure serve allure-results"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 exit $TEST_EXIT_CODE
