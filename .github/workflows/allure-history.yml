@@ -39,17 +39,19 @@ jobs:
           path: allure-results
           if_no_artifact_found: warn
       
-      - name: Get Allure history from gh-pages (sparse checkout)
+      - name: Get Allure history from gh-pages
         uses: actions/checkout@v4
         if: always()
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
-          sparse-checkout: |
-            allure-history
-            .nojekyll
-          sparse-checkout-cone-mode: false
+          filter: blob:none
+          depth: 1
+
+      - name: Clean up .git folder
+        if: always()
+        run: rm -rf gh-pages/.git
       
       - name: Setup Allure history
         if: always()
