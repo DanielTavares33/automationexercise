@@ -47,7 +47,7 @@ jobs:
           ref: gh-pages
           path: gh-pages
           filter: blob:none
-          depth: 1
+          fetch-depth: 1
 
       - name: Clean up .git folder
         if: always()
