@@ -463,3 +463,4 @@ Scenario: Login User with correct email and password
 4. **Use CSS selectors only** in locator classes
 5. **Extend fixtures** in `support/fixtures.ts` for new page objects
 6. **Import test from fixtures**, not from `@playwright/test` in step definitions
+7. **Never commit or push changes** — only the user can commit and push. After making changes, inform the user what was done and let them decide whether to commit and push.
