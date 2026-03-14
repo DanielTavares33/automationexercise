@@ -4,7 +4,7 @@ on:
   schedule:
     # Run daily at 2:00 AM UTC
     - cron: '0 2 * * *'
-  
+
   # Allow manual trigger
   workflow_dispatch:
 
@@ -13,36 +13,36 @@ jobs:
     name: Nightly Regression Suite
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-      
+
       - name: Run TypeScript compilation check
         run: npx tsc --noEmit
-      
+
       - name: Run regression tests
         env:
           CI: true
           WORKERS: 4
         run: ./scripts/run-tests.sh regression
-      
+
       - name: Generate Allure report
         if: always()
         run: npm run allure:generate
-      
+
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
@@ -50,7 +50,7 @@ jobs:
           name: playwright-report-regression-${{ github.run_number }}
           path: playwright-report/
           retention-days: 30
-      
+
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,15 +58,15 @@ jobs:
           name: allure-report-regression-${{ github.run_number }}
           path: allure-report/
           retention-days: 30
-      
+
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-regression-${{ github.run_number }}
+          name: allure-results-latest
           path: allure-results/
           retention-days: 14
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -74,7 +74,7 @@ jobs:
           name: test-results-regression-${{ github.run_number }}
           path: test-results/
           retention-days: 14
-      
+
       - name: Create issue on failure
         if: failure()
         uses: actions/github-script@v7
@@ -82,24 +82,24 @@ jobs:
           script: |
             const title = `🚨 Nightly Regression Tests Failed - ${new Date().toISOString().split('T')[0]}`;
             const body = `## Regression Test Failure
-            
+
             The nightly regression test suite has failed.
-            
+
             **Details:**
             - **Date:** ${new Date().toISOString()}
             - **Workflow Run:** [View Details](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
             - **Commit:** ${context.sha.substring(0, 7)}
-            
+
             **Action Required:**
             1. Review the [test results](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
             2. Download report artifacts (Playwright HTML or Allure) for detailed analysis
             3. Fix failing tests or update test expectations
             4. Close this issue once resolved
-            
+
             ---
             *This issue was automatically created by the scheduled regression workflow.*
             `;
-            
+
             // Check if an issue already exists for today
             const today = new Date().toISOString().split('T')[0];
             const issues = await github.rest.issues.listForRepo({
@@ -109,11 +109,11 @@ jobs:
               labels: 'automated-test-failure',
               per_page: 100
             });
-            
-            const existingIssue = issues.data.find(issue => 
+
+            const existingIssue = issues.data.find(issue =>
               issue.title.includes(today)
             );
-            
+
             if (!existingIssue) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -125,7 +125,7 @@ jobs:
             } else {
               console.log('Issue already exists for today:', existingIssue.number);
             }
-      
+
       - name: Test Summary
         if: always()
         run: |

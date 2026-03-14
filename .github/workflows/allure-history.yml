@@ -2,7 +2,7 @@ name: Allure Report with History
 
 # This workflow generates Allure reports with historical trends
 # and publishes them to GitHub Pages
-# 
+#
 # Prerequisites:
 # 1. Enable GitHub Pages in repository Settings
 # 2. Set source to 'gh-pages' branch
@@ -13,7 +13,7 @@ on:
     workflows: ["Scheduled Regression Tests"]
     types:
       - completed
-  
+
   # Allow manual trigger
   workflow_dispatch:
 
@@ -27,18 +27,18 @@ jobs:
     name: Generate Allure Report with History
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}
-    
+
     steps:
       - name: Download Allure results artifact
-        uses: dawidd6/action-download-artifact@v2
-        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v6
+        continue-on-error: false
         with:
           workflow: scheduled-tests.yml
-          name: allure-results-regression-.*
-          name_is_regexp: true
+          run_id: ${{ github.event.workflow_run.id }}
+          name: allure-results-latest
           path: allure-results
           if_no_artifact_found: warn
-      
+
       - name: Get Allure history from gh-pages
         uses: actions/checkout@v4
         if: always()
@@ -52,25 +52,25 @@ jobs:
       - name: Clean up .git folder
         if: always()
         run: rm -rf gh-pages/.git
-      
+
       - name: Setup Allure history
         if: always()
         run: |
           # Create allure-history directory
           mkdir -p allure-history
-          
+
           # Copy history from gh-pages if exists
           if [ -d "gh-pages/allure-history" ]; then
             cp -r gh-pages/allure-history/* allure-history/
           fi
-          
+
           # Ensure .nojekyll exists for GitHub Pages
           if [ -f "gh-pages/.nojekyll" ]; then
             cp gh-pages/.nojekyll .nojekyll
           else
             touch .nojekyll
           fi
-      
+
       - name: Generate Allure report with history
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -78,7 +78,7 @@ jobs:
           allure_results: allure-results
           allure_history: allure-history
           keep_reports: 20
-      
+
       - name: Deploy report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
@@ -88,7 +88,7 @@ jobs:
           publish_dir: allure-history
           keep_files: false
           force_orphan: true
-      
+
       - name: Add report URL to summary
         if: always()
         run: |
