@@ -33,11 +33,14 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Download Allure results artifact
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v2
         continue-on-error: true
         with:
-          name: allure-results-regression-${{ github.event.workflow_run.run_number }}
+          workflow: scheduled-tests.yml
+          name: allure-results-regression-.*
+          name_is_regexp: true
           path: allure-results
+          if_no_artifact_found: warn
       
       - name: Get Allure history from gh-pages
         uses: actions/checkout@v4
@@ -72,6 +75,7 @@ jobs:
           publish_branch: gh-pages
           publish_dir: allure-history
           keep_files: false
+          force_orphan: true
       
       - name: Add report URL to summary
         if: always()
