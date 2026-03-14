@@ -41,6 +41,7 @@ export class RegisterPage extends BasePage {
 
   async clickCreateAccountButton(): Promise<void> {
     await this.locators.createAccountButton.click();
+    await this.page.waitForURL('**/account_created');
   }
 
   async verifyAccountCreated(): Promise<void> {

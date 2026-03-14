@@ -13,6 +13,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : 4,
   reporter: 'html',
+  expect: {
+    timeout: 10000,
+  },
   use: {
     baseURL: 'https://automationexercise.com',
     headless: process.env.HEADLESS === 'true',

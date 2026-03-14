@@ -11,7 +11,12 @@
     "test:register": "bddgen && playwright test --grep @register",
     "test:contact-us": "bddgen && playwright test --grep @contact-us",
     "test:test-cases": "bddgen && playwright test --grep @test-cases",
-    "test:products": "bddgen && playwright test --grep @products"
+    "test:products": "bddgen && playwright test --grep @products",
+    "test:home": "bddgen && playwright test --grep @home",
+    "test:checkout": "bddgen && playwright test --grep @checkout",
+    "test:category": "bddgen && playwright test --grep @category",
+    "test:brand": "bddgen && playwright test --grep @brand",
+    "test:tag": "bddgen && playwright test --grep @$TAG"
   },
   "keywords": [],
   "author": "",
