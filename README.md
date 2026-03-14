@@ -29,12 +29,35 @@ npx playwright install chromium
 
 ## Running Tests
 
+### CI/Parallel Execution (Recommended)
+
+```bash
+# Run all tests in parallel, headless mode, with 2 retries
+./scripts/run-tests.sh
+
+# Or via npm
+npm run test:ci
+
+# Run specific test group
+./scripts/run-tests.sh smoke      # @smoke scenarios
+./scripts/run-tests.sh regression # full suite
+./scripts/run-tests.sh login      # login feature only
+
+# Custom worker count
+WORKERS=8 ./scripts/run-tests.sh
+
+# Combine custom workers with tag filter
+WORKERS=8 ./scripts/run-tests.sh smoke
+```
+
+### Interactive Development
+
 ```bash
 # Run all tests
 npm test
 
 # Run by tag group
-npm run test:smoke       # happy path scenarios — fast CI gate
+npm run test:smoke       # @smoke scenarios — fast CI gate
 npm run test:regression  # full suite
 npm run test:login       # login feature only
 npm run test:register    # register feature only
