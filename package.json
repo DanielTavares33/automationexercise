@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "bddgen && playwright test",
+    "test:ci": "./scripts/run-tests.sh",
     "test:smoke": "bddgen && playwright test --grep @smoke",
     "test:regression": "bddgen && playwright test --grep @regression",
     "test:login": "bddgen && playwright test --grep @login",

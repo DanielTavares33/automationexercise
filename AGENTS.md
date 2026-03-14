@@ -20,6 +20,29 @@ npx tsc --noEmit
 
 **CRITICAL:** Always run `bddgen` before `playwright test`. Never run `playwright test` alone.
 
+**Using the CI/parallel test script (recommended for CI/CD and parallel execution):**
+
+```bash
+# Run all tests in parallel, headless mode, with 2 retries
+./scripts/run-tests.sh
+
+# Or use npm script
+npm run test:ci
+
+# Run specific tag filter
+./scripts/run-tests.sh smoke      # @smoke scenarios
+./scripts/run-tests.sh regression # @regression scenarios
+./scripts/run-tests.sh login      # @login scenarios
+
+# Custom worker count
+WORKERS=8 ./scripts/run-tests.sh
+
+# Custom workers with tag filter
+WORKERS=8 ./scripts/run-tests.sh smoke
+```
+
+**Using npm scripts (interactive development):**
+
 ```bash
 # Run all tests (auto-runs bddgen first)
 npm test
