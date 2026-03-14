@@ -1,0 +1,122 @@
+name: Manual Test Execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: true
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - login
+          - register
+          - products
+          - checkout
+          - contact-us
+          - home
+          - category
+          - brand
+          - test-cases
+        default: 'smoke'
+      
+      custom_tag:
+        description: 'Custom tag (leave empty to use test suite)'
+        required: false
+        type: string
+      
+      workers:
+        description: 'Number of parallel workers (1-8)'
+        required: true
+        type: number
+        default: 4
+      
+      browser:
+        description: 'Browser to test'
+        required: true
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+        default: 'chromium'
+
+jobs:
+  test:
+    name: Run Tests - ${{ inputs.custom_tag || inputs.test_suite }} (${{ inputs.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ inputs.browser }}
+      
+      - name: Run TypeScript compilation check
+        run: npx tsc --noEmit
+      
+      - name: Determine test tag
+        id: test_tag
+        run: |
+          if [ -n "${{ inputs.custom_tag }}" ]; then
+            echo "tag=${{ inputs.custom_tag }}" >> $GITHUB_OUTPUT
+            echo "Running tests with custom tag: ${{ inputs.custom_tag }}"
+          elif [ "${{ inputs.test_suite }}" = "all" ]; then
+            echo "tag=" >> $GITHUB_OUTPUT
+            echo "Running all tests"
+          else
+            echo "tag=${{ inputs.test_suite }}" >> $GITHUB_OUTPUT
+            echo "Running tests with tag: ${{ inputs.test_suite }}"
+          fi
+      
+      - name: Run Playwright tests
+        env:
+          CI: true
+          WORKERS: ${{ inputs.workers }}
+        run: |
+          if [ -z "${{ steps.test_tag.outputs.tag }}" ]; then
+            ./scripts/run-tests.sh
+          else
+            ./scripts/run-tests.sh "${{ steps.test_tag.outputs.tag }}"
+          fi
+      
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ inputs.custom_tag || inputs.test_suite }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: 30
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ inputs.custom_tag || inputs.test_suite }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: test-results/
+          retention-days: 7
+      
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Suite:** ${{ inputs.custom_tag || inputs.test_suite }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Browser:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workers:** ${{ inputs.workers }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

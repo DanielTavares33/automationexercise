@@ -12,7 +12,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : 4,
-  reporter: 'html',
+  reporter: process.env.CI 
+    ? [['html'], ['github'], ['list']]
+    : 'html',
   expect: {
     timeout: 10000,
   },

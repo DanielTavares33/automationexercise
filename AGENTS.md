@@ -81,6 +81,84 @@ WORKERS=4 HEADLESS=true npm run test:smoke
 npx playwright show-report
 ```
 
+## GitHub Actions CI/CD
+
+This repository includes three GitHub Actions workflows for automated testing:
+
+### 1. Manual Test Execution
+**Trigger:** Manual (workflow_dispatch)  
+**File:** `.github/workflows/manual-tests.yml`
+
+Run tests on-demand from GitHub UI with customizable parameters:
+
+- **Test Suite:** Choose from all, smoke, regression, or specific feature tags
+- **Custom Tag:** Override with any custom tag
+- **Workers:** Configure parallel execution (1-8 workers)
+- **Browser:** Select chromium, firefox, or webkit
+
+**Usage:**
+1. Go to GitHub Actions tab
+2. Select "Manual Test Execution" workflow
+3. Click "Run workflow"
+4. Configure parameters and run
+
+**Features:**
+- ✅ Manual trigger with flexible options
+- ✅ Artifact uploads (HTML report, test results)
+- ✅ Test summary in workflow output
+- ✅ 60-minute timeout
+
+### 2. PR Test Validation
+**Trigger:** Pull request (on open/sync/reopen)  
+**File:** `.github/workflows/pr-tests.yml`
+
+Automatically runs smoke tests on pull requests to validate changes:
+
+**Features:**
+- ✅ Runs @smoke tests (fast feedback, ~5-10 min)
+- ✅ Blocks merge if tests fail
+- ✅ Posts test results as PR comment
+- ✅ Artifact uploads for debugging
+- ✅ 30-minute timeout
+
+**Branches:** Triggers on PRs to `main`, `master`, or `develop`
+
+### 3. Scheduled Regression Tests
+**Trigger:** Scheduled (daily at 2:00 AM UTC) or manual  
+**File:** `.github/workflows/scheduled-tests.yml`
+
+Runs full regression suite nightly:
+
+**Features:**
+- ✅ Full @regression test suite
+- ✅ Creates GitHub issue on failure (auto-labeled)
+- ✅ Artifact uploads (30-day retention)
+- ✅ Test summary in workflow output
+- ✅ 90-minute timeout
+
+**Schedule:** Daily at 2:00 AM UTC (configurable via cron)
+
+### CI Configuration
+
+The Playwright config automatically detects CI environment and applies:
+- **Retries:** 2 retries for failed tests (0 locally)
+- **Reporters:** HTML + GitHub + List (HTML only locally)
+- **Headless:** Forced true in CI
+- **Workers:** Configurable via WORKERS env var
+
+### Viewing Test Results
+
+**From GitHub Actions:**
+1. Navigate to Actions tab
+2. Select workflow run
+3. Download artifacts (HTML report, test results)
+4. View test summary in workflow output
+
+**HTML Report:**
+- Retention: 30 days (regression), 14 days (PR)
+- Includes screenshots, traces, and detailed test results
+- Download artifact and open `index.html` locally
+
 ## Architecture
 
 **Framework:** `playwright-bdd` + `@playwright/test` in TypeScript (NOT Cucumber)  

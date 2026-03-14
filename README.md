@@ -72,6 +72,40 @@ HEADLESS=true npm test
 WORKERS=4 HEADLESS=true npm run test:smoke
 ```
 
+## GitHub Actions CI/CD
+
+This repository includes automated testing workflows:
+
+### Available Workflows
+
+1. **Manual Test Execution** - Run tests on-demand with custom parameters
+   - Trigger: Manual from GitHub Actions UI
+   - Configure: Test suite, workers, browser
+   - Best for: Ad-hoc testing, debugging
+
+2. **PR Validation** - Automated smoke tests on pull requests
+   - Trigger: Automatically on PR open/update
+   - Runs: @smoke tests only (fast feedback)
+   - Blocks: Merge if tests fail
+
+3. **Scheduled Regression** - Nightly full test suite
+   - Trigger: Daily at 2:00 AM UTC (or manual)
+   - Runs: Full @regression suite
+   - Creates: GitHub issue on failure
+
+### Usage
+
+**Run tests manually:**
+1. Go to [Actions tab](../../actions)
+2. Select "Manual Test Execution"
+3. Click "Run workflow"
+4. Choose test suite and parameters
+
+**View test results:**
+- Download HTML report from workflow artifacts
+- Check PR comments for smoke test results
+- Monitor scheduled test issues
+
 ## Tag Strategy
 
 | Dimension | Tags | Usage |
